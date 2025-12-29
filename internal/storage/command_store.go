@@ -3,7 +3,7 @@ package storage
 import (
 	"database/sql"
 
-	"fault-tolerant-robot-backend/internal/domain"
+	"github.com/colin-110/fault-tolerant-robot-backend/internal/domain"
 )
 
 type CommandStore struct {

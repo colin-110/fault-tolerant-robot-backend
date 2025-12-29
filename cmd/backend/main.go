@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"fault-tolerant-robot-backend/internal/storage"
+	"github.com/colin-110/fault-tolerant-robot-backend/internal/storage"
 )
 
 func main() {
