@@ -70,3 +70,23 @@ func (s *CommandStore) UpdateState(commandID string, next domain.CommandState) e
 
 	return tx.Commit()
 }
+
+func (s *CommandStore) FailInFlightCommands(robotID string) error {
+	_, err := s.db.Exec(`
+		UPDATE commands
+		SET state = 'FAILED',
+		    updated_at = CURRENT_TIMESTAMP
+		WHERE robot_id = ?
+		  AND state IN ('SENT', 'ACKED')
+	`, robotID)
+	return err
+}
+func (s *CommandStore) FailAllUnfinished() error {
+	_, err := s.db.Exec(`
+		UPDATE commands
+		SET state = 'FAILED',
+		    updated_at = CURRENT_TIMESTAMP
+		WHERE state IN ('CREATED', 'SENT', 'ACKED')
+	`)
+	return err
+}

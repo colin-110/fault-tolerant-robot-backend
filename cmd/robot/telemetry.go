@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"math/rand"
 	"time"
 
 	pb "github.com/colin-110/fault-tolerant-robot-backend/proto"
@@ -16,9 +15,9 @@ func runTelemetry(client pb.TelemetryServiceClient, robotID string) {
 	}
 
 	for {
-		if rand.Intn(100) < 5 {
-			log.Fatal("robot crashed during telemetry")
-		}
+		// if rand.Intn(100) < 5 {
+		// 	log.Fatal("robot crashed during telemetry")
+		// }
 
 		err := stream.Send(&pb.TelemetryMessage{
 			Version:         "v1",

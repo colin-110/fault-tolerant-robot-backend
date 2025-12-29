@@ -19,6 +19,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	// ---- Persistence ----
 	db, err := storage.OpenDB("robot.db")
 	if err != nil {
 		log.Fatal(err)
@@ -30,13 +31,22 @@ func main() {
 	commandStore := storage.NewCommandStore(db)
 	livenessStore := storage.NewLivenessStore(db)
 
+	// Fail unfinished commands on restart (Phase 7)
+	if err := commandStore.FailAllUnfinished(); err != nil {
+		log.Fatal(err)
+	}
+
+	// ---- Worker pools ----
 	commandPool := workers.NewCommandWorkerPool(commandStore)
 	telemetryPool := workers.NewTelemetryWorkerPool()
 
 	commandPool.Start(ctx)
 	telemetryPool.Start(ctx)
+
+	// Failure detector
 	workers.StartFailureDetector(ctx, livenessStore, commandStore)
 
+	// ---- gRPC server ----
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatal(err)
@@ -64,6 +74,7 @@ func main() {
 		}
 	}()
 
+	// ---- Graceful shutdown ----
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
 	<-sig

@@ -29,7 +29,10 @@ func StartFailureDetector(
 
 				for _, robotID := range dead {
 					log.Printf("robot %s considered DEAD", robotID)
-					// Phase 7: fail in-flight commands
+
+					if err := commandStore.FailInFlightCommands(robotID); err != nil {
+						log.Println("failed to mark commands FAILED:", err)
+					}
 				}
 			}
 		}
