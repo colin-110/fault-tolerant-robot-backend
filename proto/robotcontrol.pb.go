@@ -335,6 +335,102 @@ func (x *TelemetryAck) GetAccepted() bool {
 	return false
 }
 
+type Heartbeat struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Version       string                 `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
+	RobotId       string                 `protobuf:"bytes,2,opt,name=robot_id,json=robotId,proto3" json:"robot_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Heartbeat) Reset() {
+	*x = Heartbeat{}
+	mi := &file_proto_robotcontrol_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Heartbeat) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Heartbeat) ProtoMessage() {}
+
+func (x *Heartbeat) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_robotcontrol_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Heartbeat.ProtoReflect.Descriptor instead.
+func (*Heartbeat) Descriptor() ([]byte, []int) {
+	return file_proto_robotcontrol_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *Heartbeat) GetVersion() string {
+	if x != nil {
+		return x.Version
+	}
+	return ""
+}
+
+func (x *Heartbeat) GetRobotId() string {
+	if x != nil {
+		return x.RobotId
+	}
+	return ""
+}
+
+type HeartbeatAck struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Ok            bool                   `protobuf:"varint,1,opt,name=ok,proto3" json:"ok,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *HeartbeatAck) Reset() {
+	*x = HeartbeatAck{}
+	mi := &file_proto_robotcontrol_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *HeartbeatAck) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HeartbeatAck) ProtoMessage() {}
+
+func (x *HeartbeatAck) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_robotcontrol_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HeartbeatAck.ProtoReflect.Descriptor instead.
+func (*HeartbeatAck) Descriptor() ([]byte, []int) {
+	return file_proto_robotcontrol_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *HeartbeatAck) GetOk() bool {
+	if x != nil {
+		return x.Ok
+	}
+	return false
+}
+
 var File_proto_robotcontrol_proto protoreflect.FileDescriptor
 
 const file_proto_robotcontrol_proto_rawDesc = "" +
@@ -359,7 +455,12 @@ const file_proto_robotcontrol_proto_rawDesc = "" +
 	"\x04data\x18\x04 \x01(\fR\x04data\"D\n" +
 	"\fTelemetryAck\x12\x18\n" +
 	"\aversion\x18\x01 \x01(\tR\aversion\x12\x1a\n" +
-	"\baccepted\x18\x02 \x01(\bR\baccepted*i\n" +
+	"\baccepted\x18\x02 \x01(\bR\baccepted\"@\n" +
+	"\tHeartbeat\x12\x18\n" +
+	"\aversion\x18\x01 \x01(\tR\aversion\x12\x19\n" +
+	"\brobot_id\x18\x02 \x01(\tR\arobotId\"\x1e\n" +
+	"\fHeartbeatAck\x12\x0e\n" +
+	"\x02ok\x18\x01 \x01(\bR\x02ok*i\n" +
 	"\fCommandState\x12\x1d\n" +
 	"\x19COMMAND_STATE_UNSPECIFIED\x10\x00\x12\v\n" +
 	"\aCREATED\x10\x01\x12\b\n" +
@@ -371,7 +472,9 @@ const file_proto_robotcontrol_proto_rawDesc = "" +
 	"\x0eCommandService\x12V\n" +
 	"\rCommandStream\x12\x1f.robotcontrol.v1.CommandRequest\x1a .robotcontrol.v1.CommandResponse(\x010\x012i\n" +
 	"\x10TelemetryService\x12U\n" +
-	"\x0fTelemetryStream\x12!.robotcontrol.v1.TelemetryMessage\x1a\x1d.robotcontrol.v1.TelemetryAck(\x01B?Z=github.com/colin-110/fault-tolerant-robot-backend/proto;protob\x06proto3"
+	"\x0fTelemetryStream\x12!.robotcontrol.v1.TelemetryMessage\x1a\x1d.robotcontrol.v1.TelemetryAck(\x012W\n" +
+	"\x10HeartbeatService\x12C\n" +
+	"\x04Beat\x12\x1a.robotcontrol.v1.Heartbeat\x1a\x1d.robotcontrol.v1.HeartbeatAck(\x01B?Z=github.com/colin-110/fault-tolerant-robot-backend/proto;protob\x06proto3"
 
 var (
 	file_proto_robotcontrol_proto_rawDescOnce sync.Once
@@ -386,22 +489,26 @@ func file_proto_robotcontrol_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_robotcontrol_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_proto_robotcontrol_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_robotcontrol_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_proto_robotcontrol_proto_goTypes = []any{
 	(CommandState)(0),        // 0: robotcontrol.v1.CommandState
 	(*CommandRequest)(nil),   // 1: robotcontrol.v1.CommandRequest
 	(*CommandResponse)(nil),  // 2: robotcontrol.v1.CommandResponse
 	(*TelemetryMessage)(nil), // 3: robotcontrol.v1.TelemetryMessage
 	(*TelemetryAck)(nil),     // 4: robotcontrol.v1.TelemetryAck
+	(*Heartbeat)(nil),        // 5: robotcontrol.v1.Heartbeat
+	(*HeartbeatAck)(nil),     // 6: robotcontrol.v1.HeartbeatAck
 }
 var file_proto_robotcontrol_proto_depIdxs = []int32{
 	0, // 0: robotcontrol.v1.CommandResponse.state:type_name -> robotcontrol.v1.CommandState
 	1, // 1: robotcontrol.v1.CommandService.CommandStream:input_type -> robotcontrol.v1.CommandRequest
 	3, // 2: robotcontrol.v1.TelemetryService.TelemetryStream:input_type -> robotcontrol.v1.TelemetryMessage
-	2, // 3: robotcontrol.v1.CommandService.CommandStream:output_type -> robotcontrol.v1.CommandResponse
-	4, // 4: robotcontrol.v1.TelemetryService.TelemetryStream:output_type -> robotcontrol.v1.TelemetryAck
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
+	5, // 3: robotcontrol.v1.HeartbeatService.Beat:input_type -> robotcontrol.v1.Heartbeat
+	2, // 4: robotcontrol.v1.CommandService.CommandStream:output_type -> robotcontrol.v1.CommandResponse
+	4, // 5: robotcontrol.v1.TelemetryService.TelemetryStream:output_type -> robotcontrol.v1.TelemetryAck
+	6, // 6: robotcontrol.v1.HeartbeatService.Beat:output_type -> robotcontrol.v1.HeartbeatAck
+	4, // [4:7] is the sub-list for method output_type
+	1, // [1:4] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -418,9 +525,9 @@ func file_proto_robotcontrol_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_robotcontrol_proto_rawDesc), len(file_proto_robotcontrol_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
-			NumServices:   2,
+			NumServices:   3,
 		},
 		GoTypes:           file_proto_robotcontrol_proto_goTypes,
 		DependencyIndexes: file_proto_robotcontrol_proto_depIdxs,

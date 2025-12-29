@@ -28,11 +28,14 @@ func main() {
 	}
 
 	commandStore := storage.NewCommandStore(db)
+	livenessStore := storage.NewLivenessStore(db)
+
 	commandPool := workers.NewCommandWorkerPool(commandStore)
 	telemetryPool := workers.NewTelemetryWorkerPool()
 
 	commandPool.Start(ctx)
 	telemetryPool.Start(ctx)
+	workers.StartFailureDetector(ctx, livenessStore, commandStore)
 
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
@@ -48,6 +51,10 @@ func main() {
 	pb.RegisterTelemetryServiceServer(
 		grpcSrv,
 		grpcserver.NewTelemetryServer(telemetryPool),
+	)
+	pb.RegisterHeartbeatServiceServer(
+		grpcSrv,
+		grpcserver.NewHeartbeatServer(livenessStore),
 	)
 
 	go func() {

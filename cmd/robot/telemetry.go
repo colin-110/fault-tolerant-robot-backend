@@ -16,22 +16,19 @@ func runTelemetry(client pb.TelemetryServiceClient, robotID string) {
 	}
 
 	for {
-		// random crash
 		if rand.Intn(100) < 5 {
 			log.Fatal("robot crashed during telemetry")
 		}
 
-		msg := &pb.TelemetryMessage{
+		err := stream.Send(&pb.TelemetryMessage{
 			Version:         "v1",
 			RobotId:         robotID,
 			TimestampUnixMs: time.Now().UnixMilli(),
 			Data:            []byte("telemetry"),
-		}
-
-		if err := stream.Send(msg); err != nil {
-			log.Println("telemetry send failed:", err)
-			time.Sleep(1 * time.Second)
-			continue
+		})
+		if err != nil {
+			log.Println("telemetry failed:", err)
+			time.Sleep(time.Second)
 		}
 
 		time.Sleep(500 * time.Millisecond)

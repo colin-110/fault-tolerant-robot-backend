@@ -19,6 +19,12 @@ func InitSchema(db *sql.DB) error {
 			last_executed_command_id TEXT
 		);
 		`,
+		`
+		CREATE TABLE IF NOT EXISTS robot_liveness (
+			robot_id TEXT PRIMARY KEY,
+			last_seen_unix_ms INTEGER NOT NULL
+		);
+		`,
 	}
 
 	for _, stmt := range statements {

@@ -31,7 +31,9 @@ func main() {
 
 	commandClient := pb.NewCommandServiceClient(conn)
 	telemetryClient := pb.NewTelemetryServiceClient(conn)
+	heartbeatClient := pb.NewHeartbeatServiceClient(conn)
 
 	go runTelemetry(telemetryClient, robotID)
+	go runHeartbeat(heartbeatClient, robotID)
 	runCommands(commandClient, robotID)
 }

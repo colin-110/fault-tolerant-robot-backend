@@ -208,3 +208,98 @@ var TelemetryService_ServiceDesc = grpc.ServiceDesc{
 	},
 	Metadata: "proto/robotcontrol.proto",
 }
+
+const (
+	HeartbeatService_Beat_FullMethodName = "/robotcontrol.v1.HeartbeatService/Beat"
+)
+
+// HeartbeatServiceClient is the client API for HeartbeatService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type HeartbeatServiceClient interface {
+	Beat(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[Heartbeat, HeartbeatAck], error)
+}
+
+type heartbeatServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewHeartbeatServiceClient(cc grpc.ClientConnInterface) HeartbeatServiceClient {
+	return &heartbeatServiceClient{cc}
+}
+
+func (c *heartbeatServiceClient) Beat(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[Heartbeat, HeartbeatAck], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &HeartbeatService_ServiceDesc.Streams[0], HeartbeatService_Beat_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[Heartbeat, HeartbeatAck]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type HeartbeatService_BeatClient = grpc.ClientStreamingClient[Heartbeat, HeartbeatAck]
+
+// HeartbeatServiceServer is the server API for HeartbeatService service.
+// All implementations must embed UnimplementedHeartbeatServiceServer
+// for forward compatibility.
+type HeartbeatServiceServer interface {
+	Beat(grpc.ClientStreamingServer[Heartbeat, HeartbeatAck]) error
+	mustEmbedUnimplementedHeartbeatServiceServer()
+}
+
+// UnimplementedHeartbeatServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedHeartbeatServiceServer struct{}
+
+func (UnimplementedHeartbeatServiceServer) Beat(grpc.ClientStreamingServer[Heartbeat, HeartbeatAck]) error {
+	return status.Error(codes.Unimplemented, "method Beat not implemented")
+}
+func (UnimplementedHeartbeatServiceServer) mustEmbedUnimplementedHeartbeatServiceServer() {}
+func (UnimplementedHeartbeatServiceServer) testEmbeddedByValue()                          {}
+
+// UnsafeHeartbeatServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to HeartbeatServiceServer will
+// result in compilation errors.
+type UnsafeHeartbeatServiceServer interface {
+	mustEmbedUnimplementedHeartbeatServiceServer()
+}
+
+func RegisterHeartbeatServiceServer(s grpc.ServiceRegistrar, srv HeartbeatServiceServer) {
+	// If the following call panics, it indicates UnimplementedHeartbeatServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&HeartbeatService_ServiceDesc, srv)
+}
+
+func _HeartbeatService_Beat_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(HeartbeatServiceServer).Beat(&grpc.GenericServerStream[Heartbeat, HeartbeatAck]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type HeartbeatService_BeatServer = grpc.ClientStreamingServer[Heartbeat, HeartbeatAck]
+
+// HeartbeatService_ServiceDesc is the grpc.ServiceDesc for HeartbeatService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var HeartbeatService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "robotcontrol.v1.HeartbeatService",
+	HandlerType: (*HeartbeatServiceServer)(nil),
+	Methods:     []grpc.MethodDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "Beat",
+			Handler:       _HeartbeatService_Beat_Handler,
+			ClientStreams: true,
+		},
+	},
+	Metadata: "proto/robotcontrol.proto",
+}

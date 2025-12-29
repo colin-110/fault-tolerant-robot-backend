@@ -39,6 +39,15 @@ message TelemetryAck {
   bool accepted = 2;
 }
 
+message Heartbeat {
+  string version = 1;
+  string robot_id = 2;
+}
+
+message HeartbeatAck {
+  bool ok = 1;
+}
+
 service CommandService {
   rpc CommandStream(stream CommandRequest)
       returns (stream CommandResponse);
@@ -47,4 +56,8 @@ service CommandService {
 service TelemetryService {
   rpc TelemetryStream(stream TelemetryMessage)
       returns (TelemetryAck);
+}
+
+service HeartbeatService {
+  rpc Beat(stream Heartbeat) returns (HeartbeatAck);
 }
