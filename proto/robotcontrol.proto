@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package robotcontrol.v1;
+
+option go_package = "github.com/colin-110/fault-tolerant-robot-backend/proto;proto";
+
+enum CommandState {
+  COMMAND_STATE_UNSPECIFIED = 0;
+  CREATED = 1;
+  SENT = 2;
+  ACKED = 3;
+  EXECUTED = 4;
+  FAILED = 5;
+}
+
+message CommandRequest {
+  string version = 1;
+  string robot_id = 2;
+  string command_id = 3;
+  string payload = 4;
+}
+
+message CommandResponse {
+  string version = 1;
+  string command_id = 2;
+  CommandState state = 3;
+  string error = 4;
+}
+
+message TelemetryMessage {
+  string version = 1;
+  string robot_id = 2;
+  int64 timestamp_unix_ms = 3;
+  bytes data = 4;
+}
+
+message TelemetryAck {
+  string version = 1;
+  bool accepted = 2;
+}
+
+service CommandService {
+  rpc CommandStream(stream CommandRequest)
+      returns (stream CommandResponse);
+}
+
+service TelemetryService {
+  rpc TelemetryStream(stream TelemetryMessage)
+      returns (TelemetryAck);
+}
